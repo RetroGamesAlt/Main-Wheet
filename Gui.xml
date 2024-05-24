@@ -1,0 +1,90 @@
+local MangoLib = loadstring(game:HttpGet("https://pastebin.com/raw/N3sKKx0a"))()
+local win = MangoLib:Window("Wheet Panel")
+
+local Tab = win:Tab("Scanner")
+
+Tab:Button("Scan Remote Events", function()
+
+local function scanForRemoteEvents()
+    for _, descendant in ipairs(game:GetDescendants()) do
+        if descendant:IsA("RemoteEvent") then
+            print("Found remote event:", descendant.Name)
+        end
+    end
+end
+
+scanForRemoteEvents()
+
+game.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA("RemoteEvent") then
+        print("New remote event found:", descendant.Name)
+    end
+end)
+
+game.DescendantRemoving:Connect(function(descendant)
+    if descendant:IsA("RemoteEvent") then
+        print("Remote event removed:", descendant.Name)
+    end
+end)
+end)
+
+Tab:Button("Scan Backdoor", function()
+local function scanForBackdoors()
+    for _, descendant in ipairs(game:GetDescendants()) do
+        if descendant:IsA("RemoteFunction") or descendant:IsA("RemoteEvent") then
+            if not descendant.Parent:FindFirstChild("Authenticator") then
+                print("Potential backdoor found:", descendant.Name)
+            end
+        end
+    end
+end
+
+scanForBackdoors()
+
+game.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA("RemoteFunction") or descendant:IsA("RemoteEvent") then
+        if not descendant.Parent:FindFirstChild("Authenticator") then
+            print("New potential backdoor found:", descendant.Name)
+        end
+    end
+end)
+
+game.DescendantRemoving:Connect(function(descendant)
+    if descendant:IsA("RemoteFunction") or descendant:IsA("RemoteEvent") then
+        if not descendant.Parent:FindFirstChild("Authenticator") then
+            print("Potential backdoor removed:", descendant.Name)
+        end
+    end
+end)
+end)
+
+TabFarm:Button("Scan Exploiters", function()
+-- Exploit Scanner Script
+
+local function scanForExploits()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        local playerGui = player:FindFirstChildOfClass("PlayerGui")
+        if playerGui then
+            for _, screen in ipairs(playerGui:GetChildren()) do
+                if screen:IsA("ScreenGui") and screen.Name == "Console" then
+                    for _, child in ipairs(screen:GetChildren()) do
+                        if child:IsA("TextBox") then
+                            local script = child.Text
+                            print("Potential exploit detected for player:", player.Name)
+                            print("Script:")
+                            print(script)
+                            -- Uncomment the line below to execute the script
+                            -- loadstring(script)()
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+while true do
+    wait(5) -- Scan every 5 seconds
+    scanForExploits()
+end
+end)
